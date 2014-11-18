@@ -8,17 +8,22 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import tr.com.telekom.kmsh.config.Key;
+import tr.com.telekom.kmsh.util.ConfigReader;
 
 public class H2Reader {
+
 	public static String readDB(ArrayList<Key> keyList) {
 		Connection conn = null;
 		String out = "";
+		ConfigReader conf = ConfigReader.getInstance();
+		String DELIM = conf.getProperty("DELIM");
 
 		try {
-			Class.forName("org.h2.Driver");
+			Class.forName(conf.getProperty("driver"));
 
 			conn = DriverManager.getConnection(
-					"jdbc:h2:tcp://localhost/~/kmsh", "sa", "");
+					conf.getProperty("sqlConnection"),
+					conf.getProperty("dbUser"), conf.getProperty("dbPassword"));
 			Statement stat = conn.createStatement();
 
 			for (Key key : keyList) {
@@ -29,11 +34,13 @@ public class H2Reader {
 
 				// read only one line
 				if (rs.next()) {
-					out += rs.getString("date") + ";";
-					out += rs.getString("key") + ";";
-					out += rs.getString("value");
+					String d = rs.getString("date");
+					String k = rs.getString("key");
+					String v = rs.getString("value");
 
-					if (!out.endsWith("\n")) {
+					out += d.trim() + DELIM + k.replace("\n", "").trim()
+							+ DELIM + v.trim();
+					if (!v.endsWith("\n")) {
 						out += "\n";
 					}
 				}
@@ -56,12 +63,15 @@ public class H2Reader {
 	public static String readAll(String key) {
 		Connection conn = null;
 		String out = "";
+		ConfigReader conf = ConfigReader.getInstance();
+		String DELIM = conf.getProperty("DELIM");
 
 		try {
-			Class.forName("org.h2.Driver");
+			Class.forName(conf.getProperty("driver"));
 
 			conn = DriverManager.getConnection(
-					"jdbc:h2:tcp://localhost/~/kmsh", "sa", "");
+					conf.getProperty("sqlConnection"),
+					conf.getProperty("dbUser"), conf.getProperty("dbPassword"));
 			Statement stat = conn.createStatement();
 
 			String sql = "select * from tblKey where key='" + key
@@ -69,13 +79,15 @@ public class H2Reader {
 
 			ResultSet rs = stat.executeQuery(sql);
 			int cnt = 0;
-			while (rs.next() && cnt < 50) {
+			while (rs.next() && cnt < conf.getInt("MAX_VALUE")) {
 				cnt++;
-				out += rs.getString("date") + ";";
-				out += rs.getString("key") + ";";
-				out += rs.getString("value");
+				String d = rs.getString("date");
+				String k = rs.getString("key");
+				String v = rs.getString("value");
 
-				if (!out.endsWith("\n")) {
+				out += d.trim() + DELIM + k.replace("\n", "").trim() + DELIM
+						+ v.trim();
+				if (!v.endsWith("\n")) {
 					out += "\n";
 				}
 			}

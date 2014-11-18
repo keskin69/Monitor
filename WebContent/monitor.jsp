@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" import="web.PageMaker"%>
+	pageEncoding="UTF-8"%>
+<%@ page import="web.PageMaker"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -11,10 +13,10 @@
 		String confFile = request.getParameter("conf");
 		String keyList = request.getParameter("key");
 
-		confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/keyList.xml";
+		confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 		keyList = "key1";
 		if (confFile == null) {
-			out.write("Provide configuration xml file path with ?conf= parameter");
+			out.write("Provide configuration file path with ?conf= parameter");
 		} else {
 			if (keyList == null) {
 				out.write("Provide key list name with ?key= parameter");

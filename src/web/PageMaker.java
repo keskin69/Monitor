@@ -2,6 +2,7 @@ package web;
 
 import java.io.File;
 
+import tr.com.telekom.kmsh.util.ConfigReader;
 import tr.com.telekom.kmsh.util.KmshLogger;
 import tr.com.telekom.kmsh.util.KmshUtil;
 
@@ -21,13 +22,17 @@ public class PageMaker {
 	// query db table, generate a page
 	private KeyConfig keyConf = null;
 
-	public PageMaker(String keyList, String name) {
-		File fXmlFile = new File(keyList);
+	public PageMaker(String confFile, String name) {
+		ConfigReader.file = confFile;
+		ConfigReader conf = ConfigReader.getInstance();
+		String keyFileName = conf.getProperty("keyFile");
+
+		File xmlFile = new File(keyFileName);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
+			Document doc = dBuilder.parse(xmlFile);
 			doc.getDocumentElement().normalize();
 			NodeList nList = doc.getElementsByTagName("keyList");
 			for (int i = 0; i < nList.getLength(); i++) {
@@ -57,7 +62,6 @@ public class PageMaker {
 		out += "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp();
 		out += "<BR><BR>\n<TABLE border=\"1\">";
 		out += "<TR><TH>Zaman</TH><TH>Veri</TH><TH>Değer</TH><TH>Detay</TH></TR>";
-
 		for (String row : values.split("\n")) {
 			out += "<TR>";
 
@@ -86,9 +90,9 @@ public class PageMaker {
 		String out = "";
 		String values = H2Reader.readAll(key);
 
-		out += "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp();
-		out += "<BR><BR>\n<TABLE id=\"tblValues\" border=\"1\">";
-		out += "<TR><TH>Zaman</TH><TH>Değer</TH></TR>";
+		// out += "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp();
+		out += "<TABLE id=\"tblValues\" border=\"1\">";
+		out += "<thead><TR><TH>Zaman</TH><TH>Değer</TH></TR></thead><tbody>";
 
 		for (String row : values.split("\n")) {
 			out += "<TR>";
@@ -104,7 +108,7 @@ public class PageMaker {
 			out += "</TR>";
 		}
 
-		out += "</TABLE>";
+		out += "</tbody></TABLE>";
 
 		return out;
 	}

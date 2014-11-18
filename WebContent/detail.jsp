@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Details</title>
-<link rel="stylesheet" type="text/css" href="general.css">
+<link rel="stylesheet" type="text/css" href="./general.css">
 
 <%
 	String key = request.getParameter("key");
@@ -61,18 +61,15 @@
 </head>
 <body>
 	<%
-		out.write("<CENTER><BOLD>" + key + "<BR></CENTER></BOLD>");
+		out.write("<CENTER><BOLD>" + key + "</BOLD></CENTER><BR><BR>");
+		//out.write("Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp());
 	%>
-	<table>
-		<tr>
-			<td><div>
-					<%
-						out.write(PageMaker.getDetail(key));
-					%>
-				</div></td>
-			<td><div id="chart_div"
-					style="width: 700px; height: 400px; float: right"></div></td>
-		</tr>
-	</table>
+	<div style="width: 300px; height: 500px; float: left">
+		<%
+			out.write(PageMaker.getDetail(key));
+		%>
+	</div>
+	<div id="chart_div"
+		style="width: 700px; height: 500px; float: left; margin-left: 50px;"></div>
 </body>
 </html>
