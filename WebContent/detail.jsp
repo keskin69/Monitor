@@ -8,7 +8,7 @@
 <link rel="stylesheet" type="text/css" href="./general.css">
 
 <%
-	String key = request.getParameter("key");
+	String id = request.getParameter("id");
 %>
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -36,8 +36,6 @@
 				var hour = parseInt(dt.substring(11, 13));
 				var min = parseInt(dt.substring(14, 16));
 				var sec = parseInt(dt.substring(17, 20));
-				//document.write(year + ":" + month + ":" + day + ":" + hour
-				//		+ ":" + min + ":" + sec + "<BR>");
 
 				data.addRow([ new Date(year, month, day, hour, min, sec),
 						parseInt(vl) ]);
@@ -45,9 +43,9 @@
 		}
 
 		var options = {
-			title : 'Values',
+			title : 'Değerler',
 			hAxis : {
-				title : 'Time',
+				title : 'Zaman',
 			}
 		};
 
@@ -61,15 +59,16 @@
 </head>
 <body>
 	<%
-		out.write("<CENTER><BOLD>" + key + "</BOLD></CENTER><BR><BR>");
+		out.write("<CENTER><BOLD>" + id
+				+ " Detay Raporu</BOLD></CENTER><BR><BR>");
 		//out.write("Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp());
 	%>
-	<div style="width: 300px; height: 500px; float: left">
+	<div style="width: 270px; height: 500px; float: left">
 		<%
-			out.write(PageMaker.getDetail(key));
+			out.write(PageMaker.getDetail(id));
 		%>
 	</div>
 	<div id="chart_div"
-		style="width: 700px; height: 500px; float: left; margin-left: 50px;"></div>
+		style="width: 600px; height: 500px; float: left; margin-left: 50px;"></div>
 </body>
 </html>

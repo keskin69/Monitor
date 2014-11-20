@@ -11,26 +11,20 @@
 <body>
 	<%
 		String confFile = request.getParameter("conf");
-		String keyList = request.getParameter("key");
 
-		confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
-		keyList = "key1";
-		if (confFile == null) {
+			confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
+
+			if (confFile == null) {
 			out.write("Provide configuration file path with ?conf= parameter");
 		} else {
-			if (keyList == null) {
-				out.write("Provide key list name with ?key= parameter");
-
-			} else {
-				PageMaker monPage = new PageMaker(confFile, keyList);
-				out.write(monPage.process());
-			}
+			PageMaker monPage = new PageMaker(confFile);
+			out.write(monPage.process());
 		}
 	%>
 
 	<SCRIPT>
-		function detail(key) {
-			var win = window.open("detail.jsp?key=" + key, '_blank');
+		function detail(id) {
+			var win = window.open("detail.jsp?id=" + id, '_blank');
 			win.focus();
 		}
 	</SCRIPT>

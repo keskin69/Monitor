@@ -1,0 +1,5 @@
+web:monitor gorsel
+web:select report
+
+core:terminal without a window (a seperate project)
+core:web terminal (a seperate project)

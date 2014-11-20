@@ -7,12 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import tr.com.telekom.kmsh.config.Key;
+import tr.com.telekom.kmsh.config.PeriodicCommand;
 import tr.com.telekom.kmsh.util.ConfigReader;
 
 public class H2Reader {
 
-	public static String readDB(ArrayList<Key> keyList) {
+	public static String readDB(ArrayList<PeriodicCommand> commandList) {
 		Connection conn = null;
 		String out = "";
 		ConfigReader conf = ConfigReader.getInstance();
@@ -26,8 +26,8 @@ public class H2Reader {
 					conf.getProperty("dbUser"), conf.getProperty("dbPassword"));
 			Statement stat = conn.createStatement();
 
-			for (Key key : keyList) {
-				String sql = "select * from tblKey where key='" + key.name
+			for (PeriodicCommand cmd : commandList) {
+				String sql = "select * from tblKey where id='" + cmd.id
 						+ "' order by date desc";
 
 				ResultSet rs = stat.executeQuery(sql);
@@ -35,14 +35,15 @@ public class H2Reader {
 				// read only one line
 				if (rs.next()) {
 					String d = rs.getString("date");
-					String k = rs.getString("key");
 					String v = rs.getString("value");
+					v = v.replaceAll("\n", conf.getProperty("NL"));
+					v = v.replaceAll(";", conf.getProperty("FS"));
 
-					out += d.trim() + DELIM + k.replace("\n", "").trim()
-							+ DELIM + v.trim();
-					if (!v.endsWith("\n")) {
-						out += "\n";
-					}
+					String line = d.trim() + DELIM + cmd.name + DELIM
+							+ v.trim() + DELIM + cmd.id;
+					out += line.replaceAll("\n", "") + "\n";
+				} else {
+					out += ";" + cmd.name + "; ; ;\n";
 				}
 			}
 
@@ -60,7 +61,7 @@ public class H2Reader {
 		return out;
 	}
 
-	public static String readAll(String key) {
+	public static String readAll(String cmdId) {
 		Connection conn = null;
 		String out = "";
 		ConfigReader conf = ConfigReader.getInstance();
@@ -74,7 +75,7 @@ public class H2Reader {
 					conf.getProperty("dbUser"), conf.getProperty("dbPassword"));
 			Statement stat = conn.createStatement();
 
-			String sql = "select * from tblKey where key='" + key
+			String sql = "select * from tblKey where id='" + cmdId
 					+ "' order by date desc";
 
 			ResultSet rs = stat.executeQuery(sql);
@@ -82,14 +83,9 @@ public class H2Reader {
 			while (rs.next() && cnt < conf.getInt("MAX_VALUE")) {
 				cnt++;
 				String d = rs.getString("date");
-				String k = rs.getString("key");
 				String v = rs.getString("value");
 
-				out += d.trim() + DELIM + k.replace("\n", "").trim() + DELIM
-						+ v.trim();
-				if (!v.endsWith("\n")) {
-					out += "\n";
-				}
+				out += d.trim() + DELIM + v.replace("\n", "").trim() + "\n";
 			}
 
 			conn.close();
