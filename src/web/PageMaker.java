@@ -3,6 +3,7 @@ package web;
 import java.io.File;
 
 import tr.com.telekom.kmsh.util.ConfigReader;
+import tr.com.telekom.kmsh.util.H2Reader;
 import tr.com.telekom.kmsh.util.KmshLogger;
 import tr.com.telekom.kmsh.util.KmshUtil;
 
@@ -152,7 +153,7 @@ public class PageMaker {
 	public static void main(String args[]) {
 		String conf = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 
-		if (args.length == 2) {
+		if (args.length == 1) {
 			conf = args[0];
 		}
 

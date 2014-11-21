@@ -1,5 +1,13 @@
+
+core:cdr/notification delay addon
+web:dashboard (uptime, status, cdr bildirim haftalik, delay list)
+
+web:select report on a web page and display the content dynamically
+
+core:obfuscate
 web:monitor gorsel
-web:select report
 
 core:terminal without a window (a seperate project)
 core:web terminal (a seperate project)
+
+
