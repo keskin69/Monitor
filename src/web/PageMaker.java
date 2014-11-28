@@ -6,8 +6,10 @@ import tr.com.telekom.kmsh.util.ConfigReader;
 import tr.com.telekom.kmsh.util.H2Reader;
 import tr.com.telekom.kmsh.util.KmshLogger;
 import tr.com.telekom.kmsh.util.KmshUtil;
+import tr.com.telekom.kmsh.util.Table;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,6 +21,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import tr.com.telekom.kmsh.config.GroupCommandConfig;
+import tr.com.telekom.kmsh.config.PeriodicCommandConfig;
 
 public class PageMaker {
 	// query db table, generate a page
@@ -84,27 +87,27 @@ public class PageMaker {
 				GroupCommandConfig keyConf = new GroupCommandConfig();
 				keyConf.parseXML(nList.item(i));
 
-				String values = H2Reader.readDB(keyConf.commandList);
-				if (!values.equals("")) {
-					for (String row : values.split("\n")) {
+				Table table = null;
+				for (PeriodicCommandConfig cmd : keyConf.commandList) {
+					String sql = "select date, value from tblKey where id='"
+							+ cmd.id + "' order by date desc";
+
+					table = H2Reader.readAsTable(sql);
+
+					if (table.size() > 1) {
+						@SuppressWarnings("unchecked")
+						ArrayList<String> row = table.get(1);
 						out += "<TR>";
 
-						String cols[] = row.split(ConfigReader.getInstance()
-								.getProperty("DELIM"));
+						String date = row.get(0);
+						String val = row.get(1);
 
-						String id = cols[3];
-						String val = cols[2];
-						val = val.replaceAll(ConfigReader.getInstance()
-								.getProperty("FS"), ";");
-						val = val.replaceAll(ConfigReader.getInstance()
-								.getProperty("NL"), "\n");
-
-						out += "<TD>" + cols[0] + "</TD><TD>" + cols[1]
+						out += "<TD>" + date + "</TD><TD>" + cmd.name
 								+ "</TD><TD>" + val + "</TD>";
 
 						if (val != null && KmshUtil.isNumeric(val)) {
 							out += "<TD><CENTER><INPUT TYPE=\"BUTTON\" VALUE=\"?\" ONCLICK=\"detail('"
-									+ id + "')\"><CENTER></TD>";
+									+ cmd.id + "')\"><CENTER></TD>";
 						} else {
 							out += "<TD></TD>";
 						}
@@ -129,20 +132,26 @@ public class PageMaker {
 
 	public static String getDetail(String id) {
 		String out = "";
-		String values = H2Reader.readAll(id);
+		String sql = "select date, value from tblKey where id='" + id
+				+ "' order by date desc;";
+		String values = H2Reader.readAsTable(sql).getString();
 
 		out += "<TABLE id=\"tblValues\" border=\"1\">";
 		out += "<thead><TR><TH>Zaman</TH><TH>Değer</TH></TR></thead><tbody>";
 
+		int cnt = 0;
 		for (String row : values.split("\n")) {
+			if (cnt > ConfigReader.getInstance().getInt("MAX_VALUE")) {
+				break;
+			}
 			out += "<TR>";
 
-			for (String col : row.split(ConfigReader.getInstance().getProperty(
-					"DELIM"))) {
+			for (String col : row.split(";")) {
 				out += "<TD>" + col + "</TD>\n";
 			}
 
 			out += "</TR>";
+
 		}
 
 		out += "</tbody></TABLE>";
@@ -158,6 +167,6 @@ public class PageMaker {
 		}
 
 		PageMaker page = new PageMaker(conf);
-		KmshLogger.log(page.process());
+		KmshLogger.log(1, page.process());
 	}
 }

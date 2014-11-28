@@ -1,13 +1,14 @@
+core:delay raporlari hatali
 
-core:cdr/notification delay addon
-web:dashboard (uptime, status, cdr bildirim haftalik, delay list)
+core: add time to exceptions/exceptions via logs
+core:cdr delay addon
+web:dashboard (uptime, status, cdr bildirim haftalik, notif delay, cdr delay)
 
 web:select report on a web page and display the content dynamically
 
+core:db password hide
 core:obfuscate
 web:monitor gorsel
 
 core:terminal without a window (a seperate project)
 core:web terminal (a seperate project)
-
-
