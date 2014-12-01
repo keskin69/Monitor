@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="general.css">
 <title>KMSH/FÜS Monitor Sayfası</title>
 </head>
 <body>
@@ -23,8 +24,8 @@
 	%>
 
 	<SCRIPT>
-		function detail(id) {
-			var win = window.open("detail.jsp?id=" + id, '_blank');
+		function detail(name) {
+			var win = window.open("detail.jsp?name=" + name, '_blank');
 			win.focus();
 		}
 	</SCRIPT>

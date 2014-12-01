@@ -1,12 +1,13 @@
 @CHARSET "UTF-8";
 
 body {
-	background-color: white;
+	background-color: lightblue;
 }
 
 table {
 	width: 100%;
 	display: block;
+	style: CSSTableGenerator;
 }
 
 thead {

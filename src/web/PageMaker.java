@@ -3,7 +3,7 @@ package web;
 import java.io.File;
 
 import tr.com.telekom.kmsh.util.ConfigReader;
-import tr.com.telekom.kmsh.util.H2Reader;
+import tr.com.telekom.kmsh.util.H2Util;
 import tr.com.telekom.kmsh.util.KmshLogger;
 import tr.com.telekom.kmsh.util.KmshUtil;
 import tr.com.telekom.kmsh.util.Table;
@@ -55,7 +55,7 @@ public class PageMaker {
 	}
 
 	public String process() {
-		String out = "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp();
+		String out = "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp(0);
 		out += "<BR><BR>\n<TABLE border=\"1\">";
 		out += "<TR><TH>Zaman</TH><TH>Veri</TH><TH>Değer</TH><TH>Detay</TH></TR>";
 
@@ -92,7 +92,7 @@ public class PageMaker {
 					String sql = "select date, value from tblKey where id='"
 							+ cmd.id + "' order by date desc";
 
-					table = H2Reader.readAsTable(sql);
+					table = H2Util.readAsTable(sql);
 
 					if (table.size() > 1) {
 						@SuppressWarnings("unchecked")
@@ -107,7 +107,7 @@ public class PageMaker {
 
 						if (val != null && KmshUtil.isNumeric(val)) {
 							out += "<TD><CENTER><INPUT TYPE=\"BUTTON\" VALUE=\"?\" ONCLICK=\"detail('"
-									+ cmd.id + "')\"><CENTER></TD>";
+									+ cmd.name + "')\"><CENTER></TD>";
 						} else {
 							out += "<TD></TD>";
 						}
@@ -130,31 +130,11 @@ public class PageMaker {
 		return out;
 	}
 
-	public static String getDetail(String id) {
-		String out = "";
-		String sql = "select date, value from tblKey where id='" + id
-				+ "' order by date desc;";
-		String values = H2Reader.readAsTable(sql).getString();
-
-		out += "<TABLE id=\"tblValues\" border=\"1\">";
-		out += "<thead><TR><TH>Zaman</TH><TH>Değer</TH></TR></thead><tbody>";
-
-		int cnt = 0;
-		for (String row : values.split("\n")) {
-			if (cnt > ConfigReader.getInstance().getInt("MAX_VALUE")) {
-				break;
-			}
-			out += "<TR>";
-
-			for (String col : row.split(";")) {
-				out += "<TD>" + col + "</TD>\n";
-			}
-
-			out += "</TR>";
-
-		}
-
-		out += "</tbody></TABLE>";
+	public static String getDetail(String name) {
+		String max = ConfigReader.getInstance().getProperty("MAX_VALUE");
+		String sql = "select date, value from tblKey where name='" + name
+				+ "' order by date desc limit " + max;
+		String out = H2Util.readAsTable(sql).getHTML(name);
 
 		return out;
 	}
