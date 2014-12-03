@@ -16,6 +16,7 @@
 <script type="text/javascript" src="https://www.google.com/jsapi">
 	
 </script>
+
 <script type="text/javascript">
 	google.load("visualization", "1", {
 		packages : [ "corechart" ]
@@ -26,19 +27,23 @@
 	});
 </script>
 
+
 </head>
 <body>
 	<label id="rptName" hidden="true"><%=name%></label>
-	<%
-		out.write("<CENTER><BOLD>" + name
-				+ " Detay Raporu</BOLD></CENTER><BR><BR>");
-	%>
+	<CENTER>
+		<BOLD><%=name%> Detay Raporu</BOLD>
+	</CENTER>
+	<BR>
+	<BR>
+
 	<div style="width: 260px; height: 500px; float: left">
 		<%
 			out.write(PageMaker.getDetail(name));
 		%>
+
 	</div>
-	<div id="chart_div"
-		style="width: 550px; height: 500px; float: left; margin-left: 50px;"></div>
+	<div id="chart_div_<%=name%>"
+		style="width: 500px; height: 450px; float: left; margin-left: 50px;"></div>
 </body>
 </html>

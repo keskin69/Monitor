@@ -54,6 +54,11 @@ public class PageMaker {
 		}
 	}
 
+	public static String getSummary(String id) {
+		String str = H2Util.getWeeklySummary(id).getHTML(id);
+		return "<div hidden=true>" + str + "</div>";
+	}
+
 	public String process() {
 		String out = "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp(0);
 		out += "<BR><BR>\n<TABLE border=\"1\">";
