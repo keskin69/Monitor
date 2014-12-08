@@ -13,9 +13,9 @@
 	<%
 		String confFile = request.getParameter("conf");
 
-			confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
+		//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 
-			if (confFile == null) {
+		if (confFile == null) {
 			out.write("Provide configuration file path with ?conf= parameter");
 		} else {
 			PageMaker monPage = new PageMaker(confFile);

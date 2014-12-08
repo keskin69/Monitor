@@ -3,7 +3,7 @@ package web;
 import java.io.File;
 
 import tr.com.telekom.kmsh.util.ConfigReader;
-import tr.com.telekom.kmsh.util.H2Util;
+import tr.com.telekom.kmsh.util.SQLUtil;
 import tr.com.telekom.kmsh.util.KmshLogger;
 import tr.com.telekom.kmsh.util.KmshUtil;
 import tr.com.telekom.kmsh.util.Table;
@@ -55,7 +55,7 @@ public class PageMaker {
 	}
 
 	public static String getSummary(String id) {
-		String str = H2Util.getWeeklySummary(id).getHTML(id);
+		String str = SQLUtil.getWeeklySummary(id).getHTML(id);
 		return "<div hidden=true>" + str + "</div>";
 	}
 
@@ -97,7 +97,7 @@ public class PageMaker {
 					String sql = "select date, value from tblKey where id='"
 							+ cmd.id + "' order by date desc";
 
-					table = H2Util.readAsTable(sql);
+					table = SQLUtil.readAsTable(sql);
 
 					if (table.size() > 1) {
 						@SuppressWarnings("unchecked")
@@ -139,7 +139,7 @@ public class PageMaker {
 		String max = ConfigReader.getInstance().getProperty("MAX_VALUE");
 		String sql = "select date, value from tblKey where name='" + name
 				+ "' order by date desc limit " + max;
-		String out = H2Util.readAsTable(sql).getHTML(name);
+		String out = SQLUtil.readAsTable(sql).getHTML(name);
 
 		return out;
 	}
