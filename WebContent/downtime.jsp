@@ -7,27 +7,20 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="general.css">
-<title>KMSH/FÜS Monitor Sayfası</title>
+<title>KMSH/FÜS Çalışma Raporu</title>
 </head>
 <body>
 	<%
 		String confFile = request.getParameter("conf");
 
-			//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
+		//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 
-			if (confFile == "") {
-		out.write("Provide configuration file path with ?conf= parameter");
-			} else {
-		PageMaker monPage = new PageMaker(confFile);
-		out.write(monPage.getLogItems());
-			}
-	%>
-
-	<SCRIPT>
-		function detail(name) {
-			var win = window.open("detail.jsp?name=" + name, '_blank');
-			win.focus();
+		if (confFile == "") {
+			out.write("Provide configuration file path with ?conf= parameter");
+		} else {
+			PageMaker monPage = new PageMaker(confFile);
+			out.write(monPage.getDownTime());
 		}
-	</SCRIPT>
+	%>
 </body>
 </html>

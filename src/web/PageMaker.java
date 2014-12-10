@@ -10,6 +10,7 @@ import tr.com.telekom.kmsh.util.Table;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -59,7 +60,7 @@ public class PageMaker {
 		return "<div hidden=true>" + str + "</div>";
 	}
 
-	public String process() {
+	public String getLogItems() {
 		String out = "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp(0);
 		out += "<BR><BR>\n<TABLE border=\"1\">";
 		out += "<TR><TH>Zaman</TH><TH>Veri</TH><TH>Değer</TH><TH>Detay</TH></TR>";
@@ -76,7 +77,43 @@ public class PageMaker {
 		return out;
 	}
 
-	public String processCommandFile(String file) {
+	@SuppressWarnings("unchecked")
+	public String getDownTime() {
+		String out = "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp(0);
+		out += "<BR><BR>\n<TABLE border=\"1\">";
+		out += "<TR><TH>Kapandı</TH><TH>Açıldı</TH><TH>Kapalı Kaldığı Süre (Saat)</TH></TR>";
+		String sql = "select date, value from tblKey where id='cmd3.1' and date >'"
+				+ KmshUtil.getCurrentTimeStamp(-30) + "'";
+
+		Table table = SQLUtil.readAsTable(sql);
+		String prevDate = null;
+		String newDate = null;
+		for (ArrayList<String> row : table) {
+			newDate = row.get(0);
+			if (row.get(1).contains("stopped")) {
+				// stopped
+				if (prevDate == null) {
+					prevDate = newDate;
+				}
+			} else {
+				// started
+				if (prevDate != null) {
+					Date pDate = KmshUtil.convertFullDate(prevDate);
+					Date nDate = KmshUtil.convertFullDate(newDate);
+					double duration = (nDate.getTime() - pDate.getTime())
+							/ (1000 * 60 * 60);
+					out += "<TR><TD>" + prevDate + "</TD><TD>" + newDate
+							+ "</TD><TD>" + duration + "</TD></TR>";
+					prevDate = null;
+				}
+			}
+		}
+
+		out += "</TABLE>";
+		return out;
+	}
+
+	private String processCommandFile(String file) {
 		String out = "";
 		File xmlFile = new File(file);
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -152,6 +189,6 @@ public class PageMaker {
 		}
 
 		PageMaker page = new PageMaker(conf);
-		KmshLogger.log(1, page.process());
+		KmshLogger.log(1, page.getLogItems());
 	}
 }

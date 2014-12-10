@@ -19,7 +19,7 @@ function drawChart2D(title, name) {
 			var vl = row.cells[1].innerHTML;
 
 			var year = parseInt(dt.substring(0, 4));
-			var month = parseInt(dt.substring(5, 7));
+			var month = parseInt(dt.substring(5, 7)) - 1;
 			var day = parseInt(dt.substring(8, 10));
 
 			if (dt.length > 10) {
@@ -27,9 +27,9 @@ function drawChart2D(title, name) {
 				var min = parseInt(dt.substring(14, 16));
 
 				data.addRow([ new Date(year, month, day, hour, min),
-						parseInt(vl) ]);
+						parseFloat(vl) ]);
 			} else {
-				data.addRow([ new Date(year, month, day), parseInt(vl) ]);
+				data.addRow([ new Date(year, month, day), parseFloat(vl) ]);
 			}
 		}
 	}
@@ -62,7 +62,7 @@ function drawChart3D(title, name, name2) {
 			var vl = row.cells[1].innerHTML;
 
 			var year = parseInt(dt.substring(0, 4));
-			var month = parseInt(dt.substring(5, 7));
+			var month = parseInt(dt.substring(5, 7)) - 1;
 			var day = parseInt(dt.substring(8, 10));
 
 			val2 = table2.rows[i].cells[1].innerHTML;

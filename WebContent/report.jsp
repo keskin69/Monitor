@@ -28,6 +28,10 @@
 	google.setOnLoadCallback(function() {
 		drawChart3D("Toplam Bildirim Sayıları", "KMSH80", "KMSH100");
 	});
+
+	google.setOnLoadCallback(function() {
+		drawChart3D("İletim Sayıları", "DeliveryPending", "DeliveryCompleted");
+	});
 </script>
 </head>
 <body>
@@ -40,7 +44,7 @@
 
 		//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 
-		if (confFile == null) {
+		if (confFile == "") {
 			out.write("Provide configuration file path with ?conf=parameter");
 		}
 
@@ -70,6 +74,10 @@
 
 		// Weekly Notif delay
 		out.write(PageMaker.getSummary("AveBildirim"));
+
+		// Weekly Delivery
+		out.write(PageMaker.getSummary("DeliveryPending"));
+		out.write(PageMaker.getSummary("DeliveryCompleted"));
 	%>
 	<div id="chart_div_KMSH80"
 		style="width: 520px; height: 400px; float: left;"></div>
@@ -78,6 +86,9 @@
 		style="width: 520px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_AveBildirim"
+		style="width: 520px; height: 400px; float: left;"></div>
+
+	<div id="chart_div_DeliveryPending"
 		style="width: 520px; height: 400px; float: left;"></div>
 
 
