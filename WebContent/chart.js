@@ -6,13 +6,8 @@ function drawChart() {
 	drawChart2D("Detay", tblName);
 }
 
-function drawChart2D(title, name) {
-	var data = new google.visualization.DataTable();
-	data.addColumn('datetime', 'Tarih');
-	data.addColumn('number', 'Değer');
-
+function getData(name, data) {
 	var table = document.getElementById(name);
-
 	for (var i = 0, row; row = table.rows[i]; i++) {
 		if (i > 0) {
 			var dt = row.cells[0].innerHTML;
@@ -34,6 +29,15 @@ function drawChart2D(title, name) {
 		}
 	}
 
+}
+
+function drawChart2D(title, name) {
+	var data = new google.visualization.DataTable();
+	data.addColumn('datetime', 'Tarih');
+	data.addColumn('number', 'Değer');
+
+	getData(name, data);
+
 	var options = {
 		title : title,
 		hAxis : {
@@ -48,37 +52,17 @@ function drawChart2D(title, name) {
 }
 
 function drawChart3D(title, name, name2) {
-	var data = new google.visualization.DataTable();
-	data.addColumn('datetime', 'Tarih');
-	data.addColumn('number', name);
-	data.addColumn('number', name2);
+	var data1 = new google.visualization.DataTable();
+	data1.addColumn('datetime', 'Tarih');
+	data1.addColumn('number', name);
 
-	var table1 = document.getElementById(name);
-	var table2 = document.getElementById(name2);
-
-	for (var i = 0, row; row = table1.rows[i]; i++) {
-		if (i > 0) {
-			var dt = row.cells[0].innerHTML;
-			var vl = row.cells[1].innerHTML;
-
-			var year = parseInt(dt.substring(0, 4));
-			var month = parseInt(dt.substring(5, 7)) - 1;
-			var day = parseInt(dt.substring(8, 10));
-
-			val2 = table2.rows[i].cells[1].innerHTML;
-
-			if (dt.length > 10) {
-				var hour = parseInt(dt.substring(11, 13));
-				var min = parseInt(dt.substring(14, 16));
-
-				data.addRow([ new Date(year, month, day, hour, min),
-						parseInt(vl), parseInt(val2) ]);
-			} else {
-				data.addRow([ new Date(year, month, day), parseInt(vl),
-						parseInt(val2) ]);
-			}
-		}
-	}
+	var data2 = new google.visualization.DataTable();
+	data2.addColumn('datetime', 'Tarih');
+	data2.addColumn('number', name2);
+	getData(name, data1);
+	getData(name2, data2);
+	var joinedData = google.visualization.data.join(data1, data2, 'full', [ [
+			0, 0 ] ], [ 1 ], [ 1 ]);
 
 	var options = {
 		title : title,
@@ -90,5 +74,5 @@ function drawChart3D(title, name, name2) {
 	var chart = new google.visualization.ColumnChart(document
 			.getElementById('chart_div_' + name));
 
-	chart.draw(data, options);
+	chart.draw(joinedData, options);
 }

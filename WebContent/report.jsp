@@ -22,7 +22,8 @@
 	});
 
 	google.setOnLoadCallback(function() {
-		drawChart2D("Ortalama Bildirim Çıkma Hızı (Dakika)", "AveBildirim");
+		drawChart3D("Ortalama Bildirim Çıkma Hızı (Dakika)", "AveBildirim",
+				"AveDosya");
 	});
 
 	google.setOnLoadCallback(function() {
@@ -31,6 +32,10 @@
 
 	google.setOnLoadCallback(function() {
 		drawChart3D("İletim Sayıları", "DeliveryPending", "DeliveryCompleted");
+	});
+
+	google.setOnLoadCallback(function() {
+		drawChart2D("İşlenen CDR Dosyası", "ToplamDosya");
 	});
 </script>
 </head>
@@ -52,11 +57,12 @@
 		String result = KmshUtil.getCurrentTimeStamp(0) + "<BR><BR><div>";
 		result += "Status: ";
 		result += SQLUtil.readDB("cmd3.1", "value").contains("running") ? "<font color=\"green\">Çalışıyor</font>"
-				: "<font color=\"red\">Durmuş</font>";
+				: "<font color=\"red\">Çalışmıyor</font>";
 		result += "<BR>";
 
 		// uptime
-		result += "UpTime%: " + SQLUtil.readDB("UpTime", "value") + "<BR>";
+		result += "Çalışma Zamanı %: " + SQLUtil.readDB("UpTime", "value")
+				+ "<BR>";
 
 		// notification delay
 		result += "Ortalama Bildirim Çıkma Zamanı (Dakika): "
@@ -65,32 +71,41 @@
 		result += "<BR></div>";
 		out.write(result);
 
-		// Weekly Notif
+		// 10 day summary graphs
+		// Notif
 		out.write(PageMaker.getSummary("KMSH80"));
 		out.write(PageMaker.getSummary("KMSH100"));
 
-		// Weekly uptime
+		// CDR File
+		out.write(PageMaker.getSummary("AveDosya"));
+		out.write(PageMaker.getSummary("ToplamDosya"));
+
+		// uptime
 		out.write(PageMaker.getSummary("UpTime"));
 
-		// Weekly Notif delay
+		// Notif delay
 		out.write(PageMaker.getSummary("AveBildirim"));
 
-		// Weekly Delivery
+		// Delivery
 		out.write(PageMaker.getSummary("DeliveryPending"));
 		out.write(PageMaker.getSummary("DeliveryCompleted"));
 	%>
+
+
 	<div id="chart_div_KMSH80"
-		style="width: 520px; height: 400px; float: left;"></div>
+		style="width: 620px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_UpTime"
-		style="width: 520px; height: 400px; float: left;"></div>
+		style="width: 620px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_AveBildirim"
-		style="width: 520px; height: 400px; float: left;"></div>
+		style="width: 620px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_DeliveryPending"
-		style="width: 520px; height: 400px; float: left;"></div>
+		style="width: 620px; height: 400px; float: left;"></div>
 
+	<div id="chart_div_ToplamDosya"
+		style="width: 620px; height: 400px; float: left;"></div>
 
 </body>
 </html>
