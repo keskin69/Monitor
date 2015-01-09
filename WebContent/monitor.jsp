@@ -13,14 +13,14 @@
 	<%
 		String confFile = request.getParameter("conf");
 
-			//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
+		//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 
-			if (confFile == "") {
-		out.write("Provide configuration file path with ?conf= parameter");
-			} else {
-		PageMaker monPage = new PageMaker(confFile);
-		out.write(monPage.getLogItems());
-			}
+		if (confFile == "") {
+			out.write("Provide configuration file path with ?conf= parameter");
+		} else {
+			PageMaker monPage = new PageMaker(confFile);
+			out.write(monPage.getLogItems());
+		}
 	%>
 
 	<SCRIPT>

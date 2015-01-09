@@ -3,7 +3,7 @@ package web;
 import java.io.File;
 
 import tr.com.telekom.kmsh.util.ConfigReader;
-import tr.com.telekom.kmsh.util.SQLUtil;
+import tr.com.telekom.kmsh.util.H2Util;
 import tr.com.telekom.kmsh.util.KmshLogger;
 import tr.com.telekom.kmsh.util.KmshUtil;
 import tr.com.telekom.kmsh.util.Table;
@@ -56,7 +56,7 @@ public class PageMaker {
 	}
 
 	public static String getSummary(String id) {
-		String str = SQLUtil.getWeeklySummary(id).getHTML(id);
+		String str = H2Util.getSummary(id, 14).getHTML(id);
 		return "<div hidden=true>" + str + "</div>";
 	}
 
@@ -81,11 +81,11 @@ public class PageMaker {
 	public String getDownTime() {
 		String out = "Rapor Zamanı: " + KmshUtil.getCurrentTimeStamp(0);
 		out += "<BR><BR>\n<TABLE border=\"1\">";
-		out += "<TR><TH>Kapandı</TH><TH>Açıldı</TH><TH>Kapalı Kaldığı Süre (Saat)</TH></TR>";
+		out += "<TR><TH>Kapandı</TH><TH>Açıldı</TH><TH>Kapalı Kaldığı Süre (Dakika)</TH></TR>";
 		String sql = "select date, value from tblKey where id='cmd3.1' and date >'"
-				+ KmshUtil.getCurrentTimeStamp(-30) + "'";
+				+ KmshUtil.getCurrentTimeStamp(-60) + "'";
 
-		Table table = SQLUtil.readAsTable(sql);
+		Table table = H2Util.readAsTable(sql);
 		String prevDate = null;
 		String newDate = null;
 		for (ArrayList<String> row : table) {
@@ -101,7 +101,7 @@ public class PageMaker {
 					Date pDate = KmshUtil.convertFullDate(prevDate);
 					Date nDate = KmshUtil.convertFullDate(newDate);
 					double duration = (nDate.getTime() - pDate.getTime())
-							/ (1000 * 60 * 60);
+							/ (1000 * 60);
 					out += "<TR><TD>" + prevDate + "</TD><TD>" + newDate
 							+ "</TD><TD>" + duration + "</TD></TR>";
 					prevDate = null;
@@ -134,7 +134,7 @@ public class PageMaker {
 					String sql = "select date, value from tblKey where id='"
 							+ cmd.id + "' order by date desc";
 
-					table = SQLUtil.readAsTable(sql);
+					table = H2Util.readAsTable(sql);
 
 					if (table.size() > 1) {
 						@SuppressWarnings("unchecked")
@@ -176,7 +176,7 @@ public class PageMaker {
 		String max = ConfigReader.getInstance().getProperty("MAX_VALUE");
 		String sql = "select date, value from tblKey where name='" + name
 				+ "' order by date desc limit " + max;
-		String out = SQLUtil.readAsTable(sql).getHTML(name);
+		String out = H2Util.readAsTable(sql).getHTML(name);
 
 		return out;
 	}

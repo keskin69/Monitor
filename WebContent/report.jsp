@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page
-	import="web.PageMaker,tr.com.telekom.kmsh.util.SQLUtil,tr.com.telekom.kmsh.util.ConfigReader,tr.com.telekom.kmsh.util.KmshUtil"%>
+	import="web.PageMaker,tr.com.telekom.kmsh.util.H2Util,tr.com.telekom.kmsh.util.ConfigReader,tr.com.telekom.kmsh.util.KmshUtil"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -47,26 +47,26 @@
 	<%
 		String confFile = request.getParameter("conf");
 
-		//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
+			//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 
-		if (confFile == "") {
-			out.write("Provide configuration file path with ?conf=parameter");
-		}
-
+			if (confFile == "") {
+		out.write("Provide configuration file path with ?conf=parameter");
+			} else {
 		ConfigReader.file = confFile;
-		String result = KmshUtil.getCurrentTimeStamp(0) + "<BR><BR><div>";
+		String result = KmshUtil.getCurrentTimeStamp(0)
+				+ "<BR><BR><div>";
 		result += "Status: ";
-		result += SQLUtil.readDB("cmd3.1", "value").contains("running") ? "<font color=\"green\">Çalışıyor</font>"
+		result += H2Util.readDB("cmd3.1", "value").contains("running") ? "<font color=\"green\">Çalışıyor</font>"
 				: "<font color=\"red\">Çalışmıyor</font>";
 		result += "<BR>";
 
 		// uptime
-		result += "Çalışma Zamanı %: " + SQLUtil.readDB("UpTime", "value")
-				+ "<BR>";
+		result += "Çalışma Zamanı %: "
+				+ H2Util.readDB("UpTime", "value") + "<BR>";
 
 		// notification delay
 		result += "Ortalama Bildirim Çıkma Zamanı (Dakika): "
-				+ SQLUtil.readDB("AveBildirim", "value") + "<BR>";
+				+ H2Util.readDB("AveBildirim", "value") + "<BR>";
 
 		result += "<BR></div>";
 		out.write(result);
@@ -89,23 +89,24 @@
 		// Delivery
 		out.write(PageMaker.getSummary("DeliveryPending"));
 		out.write(PageMaker.getSummary("DeliveryCompleted"));
+			}
 	%>
 
 
 	<div id="chart_div_KMSH80"
-		style="width: 620px; height: 400px; float: left;"></div>
+		style="width: 650px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_UpTime"
-		style="width: 620px; height: 400px; float: left;"></div>
+		style="width: 650px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_AveBildirim"
-		style="width: 620px; height: 400px; float: left;"></div>
+		style="width: 650px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_DeliveryPending"
-		style="width: 620px; height: 400px; float: left;"></div>
+		style="width: 650px; height: 400px; float: left;"></div>
 
 	<div id="chart_div_ToplamDosya"
-		style="width: 620px; height: 400px; float: left;"></div>
+		style="width: 650px; height: 400px; float: left;"></div>
 
 </body>
 </html>

@@ -34,7 +34,7 @@ function getData(name, data) {
 function drawChart2D(title, name) {
 	var data = new google.visualization.DataTable();
 	data.addColumn('datetime', 'Tarih');
-	data.addColumn('number', 'Değer');
+	data.addColumn('number', name);
 
 	getData(name, data);
 

@@ -32,7 +32,7 @@
 <body>
 	<label id="rptName" hidden="true"><%=name%></label>
 	<CENTER>
-		<BOLD><%=name%> Detay Raporu</BOLD>
+		<bold><%=name%> Detay Raporu</bold>
 	</CENTER>
 	<BR>
 	<BR>
