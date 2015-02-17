@@ -15,7 +15,7 @@
 
 		//confFile = "/Users/mustafakeskin/Documents/workspace/MonitorLizard/monitor.cfg";
 
-		if (confFile == "") {
+		if (confFile == null) {
 			out.write("Provide configuration file path with ?conf= parameter");
 		} else {
 			PageMaker monPage = new PageMaker(confFile);

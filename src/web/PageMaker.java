@@ -1,13 +1,6 @@
 package web;
 
 import java.io.File;
-
-import tr.com.telekom.kmsh.util.ConfigReader;
-import tr.com.telekom.kmsh.util.H2Util;
-import tr.com.telekom.kmsh.util.KmshLogger;
-import tr.com.telekom.kmsh.util.KmshUtil;
-import tr.com.telekom.kmsh.util.Table;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,8 +14,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import tr.com.telekom.kmsh.config.GroupCommandConfig;
-import tr.com.telekom.kmsh.config.PeriodicCommandConfig;
+import tr.com.telekom.kmsh.util.ConfigReader;
+import tr.com.telekom.kmsh.util.H2Util;
+import tr.com.telekom.kmsh.util.KmshLogger;
+import tr.com.telekom.kmsh.util.KmshUtil;
+import tr.com.telekom.kmsh.util.Table;
 
 public class PageMaker {
 	// query db table, generate a page
@@ -30,34 +26,32 @@ public class PageMaker {
 	private String base = null;
 
 	public PageMaker(String confFile) {
-		ConfigReader.file = confFile;
-		ConfigReader conf = ConfigReader.getInstance();
-		String keyFileName = conf.getProperty("xmlFiles");
-		base = conf.getProperty("base");
+		if (confFile != null) {
+			ConfigReader.file = confFile;
+			ConfigReader conf = ConfigReader.getInstance();
+			String keyFileName = conf.getProperty("xmlFiles");
+			base = conf.getProperty("base");
 
-		File xmlFile = new File(keyFileName);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder;
-		try {
-			dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(base + xmlFile);
-			doc.getDocumentElement().normalize();
-			fileList = doc.getElementsByTagName("commandsFile");
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			File xmlFile = new File(keyFileName);
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+					.newInstance();
+			DocumentBuilder dBuilder;
+			try {
+				dBuilder = dbFactory.newDocumentBuilder();
+				Document doc = dBuilder.parse(base + xmlFile);
+				doc.getDocumentElement().normalize();
+				fileList = doc.getElementsByTagName("commandsFile");
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-	}
-
-	public static String getSummary(String id) {
-		String str = H2Util.getSummary(id, 14).getHTML(id);
-		return "<div hidden=true>" + str + "</div>";
 	}
 
 	public String getLogItems() {
@@ -69,7 +63,7 @@ public class PageMaker {
 			Element eElement = (Element) fileList.item(i);
 			String file = base + eElement.getTextContent();
 
-			out += processCommandFile(file);
+			out += Util.processCommandFile(file);
 		}
 
 		out += "</TABLE>";
@@ -110,74 +104,6 @@ public class PageMaker {
 		}
 
 		out += "</TABLE>";
-		return out;
-	}
-
-	private String processCommandFile(String file) {
-		String out = "";
-		File xmlFile = new File(file);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder;
-
-		try {
-			dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(xmlFile);
-			doc.getDocumentElement().normalize();
-			NodeList nList = doc.getElementsByTagName("group");
-
-			for (int i = 0; i < nList.getLength(); i++) {
-				GroupCommandConfig keyConf = new GroupCommandConfig();
-				keyConf.parseXML(nList.item(i));
-
-				Table table = null;
-				for (PeriodicCommandConfig cmd : keyConf.commandList) {
-					String sql = "select date, value from tblKey where id='"
-							+ cmd.id + "' order by date desc";
-
-					table = H2Util.readAsTable(sql);
-
-					if (table.size() > 1) {
-						@SuppressWarnings("unchecked")
-						ArrayList<String> row = table.get(1);
-						out += "<TR>";
-
-						String date = row.get(0);
-						String val = row.get(1);
-
-						out += "<TD>" + date + "</TD><TD>" + cmd.name
-								+ "</TD><TD>" + val + "</TD>";
-
-						if (val != null && KmshUtil.isNumeric(val)) {
-							out += "<TD><CENTER><INPUT TYPE=\"BUTTON\" VALUE=\"?\" ONCLICK=\"detail('"
-									+ cmd.name + "')\"><CENTER></TD>";
-						} else {
-							out += "<TD></TD>";
-						}
-
-						out += "</TR>\n";
-					}
-				}
-			}
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return out;
-	}
-
-	public static String getDetail(String name) {
-		String max = ConfigReader.getInstance().getProperty("MAX_VALUE");
-		String sql = "select date, value from tblKey where name='" + name
-				+ "' order by date desc limit " + max;
-		String out = H2Util.readAsTable(sql).getHTML(name);
-
 		return out;
 	}
 
