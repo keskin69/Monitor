@@ -73,10 +73,6 @@
 			result += "Ortalama CDR Transfer Zamanı (Dakika): "
 					+ H2Util.readDB("AveDosya", "value") + "<BR>";
 
-			// CDR waitings in the queue
-			result += "Queue'da İşlenmeyi Bekleyen CDR sayısı:"
-					+ H2Util.readDB("cmd1.1", "value") + "<BR>";
-
 			int pending = 0;
 			try {
 				pending = new Integer(H2Util.readDB("cmd2.1", "value"))

@@ -77,7 +77,7 @@ public class PageMaker {
 		out += "<BR><BR>\n<TABLE border=\"1\">";
 		out += "<TR><TH>Kapandı</TH><TH>Açıldı</TH><TH>Kapalı Kaldığı Süre (Dakika)</TH></TR>";
 		String sql = "select date, value from tblKey where id='cmd3.1' and date >'"
-				+ KmshUtil.getCurrentTimeStamp(-60) + "'";
+				+ KmshUtil.getCurrentTimeStamp(-90) + "'";
 
 		Table table = H2Util.readAsTable(sql);
 		String prevDate = null;
